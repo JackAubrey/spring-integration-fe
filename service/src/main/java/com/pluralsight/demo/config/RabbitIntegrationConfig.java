@@ -1,6 +1,5 @@
 package com.pluralsight.demo.config;
 
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +21,7 @@ public class RabbitIntegrationConfig {
     @Bean
     @ServiceActivator(inputChannel = RABBIT_CHANNEL)
     public AmqpOutboundEndpoint amqpOutbound(RabbitTemplate rabbitTemplate) {
+        System.out.println(">>> 3 . configuring amqp-outbound");
         AmqpOutboundEndpoint outbound = new AmqpOutboundEndpoint(rabbitTemplate);
         outbound.setRoutingKey(RABBIT_ROUTING_KEY);
         return outbound;
