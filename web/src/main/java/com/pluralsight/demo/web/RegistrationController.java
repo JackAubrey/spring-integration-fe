@@ -45,8 +45,6 @@ public class RegistrationController {
 
         registrationFacade.register(OffsetDateTime.now(), registration);
 
-        LOG.debug("Message sent to registration request channel");
-
         return "success";
     }
 }

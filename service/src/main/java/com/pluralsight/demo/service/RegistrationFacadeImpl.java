@@ -10,6 +10,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
+import com.pluralsight.demo.config.RabbitMQConfig;
 import com.pluralsight.demo.model.AttendeeRegistration;
 
 @Service
@@ -18,23 +19,22 @@ public class RegistrationFacadeImpl implements RegistrationFacade {
 
     private final MessageChannel registrationRequestChannel;
 
-    
     /**
      * @param registrationRequestChannel
      */
-    public RegistrationFacadeImpl(@Qualifier("registrationRequest") MessageChannel registrationRequestChannel) {
+    public RegistrationFacadeImpl(@Qualifier(RabbitMQConfig.REGISTRATION_REQUEST) MessageChannel registrationRequestChannel) {
         this.registrationRequestChannel = registrationRequestChannel;
     }
 
-
     @Override
     public void register(OffsetDateTime dateTime, AttendeeRegistration registration) {
-          Message<AttendeeRegistration> message = MessageBuilder.withPayload(registration)
+        Message<AttendeeRegistration> message = MessageBuilder
+                .withPayload(registration)
                 .setHeader("dateTime", OffsetDateTime.now())
                 .build();
 
         registrationRequestChannel.send(message);
         LOG.debug("Message sent to registration request channel");
     }
-    
+
 }

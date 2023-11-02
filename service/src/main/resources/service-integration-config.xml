@@ -33,6 +33,7 @@
 
    
     <!-- Service activator to execute registrationService.register(...) -->
-    <int:service-activator input-channel="registrationRequest" ref="registrationService" method="register" />
+    <int:service-activator input-channel="registrationRequest" ref="registrationService" 
+        method="register" />
 
 </beans>
