@@ -1,12 +1,9 @@
 package com.pluralsight.demo.web;
 
-import com.pluralsight.demo.model.AttendeeRegistration;
+import java.time.OffsetDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,18 +11,23 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.pluralsight.demo.model.AttendeeRegistration;
+import com.pluralsight.demo.service.RegistrationFacade;
+
 import jakarta.validation.Valid;
-import java.time.OffsetDateTime;
 
 @Controller
 @RequestMapping("/")
 public class RegistrationController {
     private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
 
-    private final MessageChannel registrationRequestChannel;
+    private final RegistrationFacade registrationFacade;
 
-    public RegistrationController(@Qualifier("registrationRequest") MessageChannel registrationRequestChannel) {
-        this.registrationRequestChannel = registrationRequestChannel;
+    /**
+     * @param registrationFacade
+     */
+    public RegistrationController(RegistrationFacade registrationFacade) {
+        this.registrationFacade = registrationFacade;
     }
 
     @GetMapping
@@ -34,17 +36,15 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public String submit(@ModelAttribute("registration") @Valid AttendeeRegistration registration, BindingResult bindingResult) {
+    public String submit(@ModelAttribute("registration") @Valid AttendeeRegistration registration,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             LOG.warn("Validation failed: {}", bindingResult);
             return "index";
         }
 
-        Message<AttendeeRegistration> message = MessageBuilder.withPayload(registration)
-                .setHeader("dateTime", OffsetDateTime.now())
-                .build();
+        registrationFacade.register(OffsetDateTime.now(), registration);
 
-        registrationRequestChannel.send(message);
         LOG.debug("Message sent to registration request channel");
 
         return "success";
