@@ -61,23 +61,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                        <executable>true</executable>
-                        <excludes>
-                                <exclude>
-                                        <groupId>org.projectlombok</groupId>
-                                        <artifactId>lombok</artifactId>
-                                </exclude>
-                        </excludes>
-                        <classifier>exec</classifier>
-                </configuration>
-        </plugin>
-
-          
-
-            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
@@ -94,8 +77,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin> -->
-
+            </plugin>
         </plugins>
     </build>
 </project>
